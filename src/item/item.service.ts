@@ -21,17 +21,15 @@ export class ItemService {
 
   async findOne(id: string): Promise<Item> {
     return this.itemRepository.findOne({
-      where: { id }, // Passando o ID dentro de um objeto 'where'
+      where: { id },
     });
   }
 
   async update(id: string, item: Partial<Item>): Promise<Item> {
-    // Atualizando o item
     await this.itemRepository.update(id, item);
 
-    // Buscando o item atualizado utilizando 'where'
     return this.itemRepository.findOne({
-      where: { id }, // Passando o 'id' dentro de um objeto 'where'
+      where: { id },
     });
   }
 

@@ -1,16 +1,24 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ItemModule } from './item/item.module'; // Importando o módulo de Item
-import { Item } from './item/item.entity'; // Entidade de Item
+import { ItemModule } from './item/item.module';
+import { Item } from './item/item.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite', // Tipo do banco de dados
-      database: 'db.sqlite', // Caminho do arquivo de banco de dados SQLite
-      entities: [Item], // Entidades que você vai usar no banco
-      synchronize: true, // Criação
+      type: 'postgres',
+      host: 'db.jxwurebyjmmmdiesxwld.supabase.co',
+      port: 5432,
+      username: 'postgres',
+      password: 'iV92wYYM2erKuO85',
+      entities: [Item],
+      synchronize: process.env.NODE_ENV !== 'production',
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
     }),
-    ItemModule, // Adicionando o módulo de itens
+    ItemModule,
   ],
 })
 export class AppModule {}
