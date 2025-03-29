@@ -13,10 +13,9 @@ import { Item } from './item/item.entity';
       password: 'iV92wYYM2erKuO85',
       entities: [Item],
       synchronize: process.env.NODE_ENV !== 'production',
-      ssl:
-        process.env.NODE_ENV === 'production'
-          ? { rejectUnauthorized: false }
-          : false,
+      ssl: {
+        rejectUnauthorized: false, // Força o uso de SSL
+      },
     }),
     ItemModule,
   ],
