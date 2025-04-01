@@ -7,16 +7,21 @@ import { Item } from './item/item.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db.jxwurebyjmmmdiesxwld.supabase.co',
-      port: 5432,
-      username: 'postgres',
-      password: 'XPKem9C89DeFdNhS',
-      database: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [Item],
       synchronize: process.env.NODE_ENV !== 'production',
-      ssl: { rejectUnauthorized: false },
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? {
+              rejectUnauthorized:
+                process.env.SSL_REJECT_UNAUTHORIZED === 'true',
+            }
+          : false,
     }),
-
     ItemModule,
   ],
 })
