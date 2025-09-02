@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { House } from 'src/house/entities/house.entity';
+import { User } from 'src/user/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Item {
@@ -14,9 +16,12 @@ export class Item {
   @Column()
   measure: string;
 
-  @Column()
-  addedBy: string;
-
   @Column({ nullable: true })
   observations?: string;
+
+  @ManyToOne(() => User, (user) => user.itemsAdded)
+  addedBy: User;
+
+  @ManyToOne(() => House, (house) => house.items)
+  house: House;
 }
