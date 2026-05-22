@@ -1,19 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Callback, Context, Handler } from 'aws-lambda';
 
-async function bootstrap() {
-  // --- BLOCO DE DEBUG PARA ADICIONAR ---
-  console.log("--- INICIANDO DEBUG DE VARIÁVEIS DE AMBIENTE ---");
-  console.log("PORTA RECEBIDA:", process.env.PORT);
-  console.log("DB_HOST RECEBIDO:", process.env.DB_HOST);
-  console.log("DB_USER RECEBIDO:", process.env.DB_USER);
-  console.log("DB_NAME RECEBIDO:", process.env.DB_NAME);
-  // Apenas verificamos se a senha existe, para não expô-la nos logs
-  console.log("DB_PASSWORD EXISTE?:", !!process.env.DB_PASSWORD); 
-  console.log("--- FIM DO DEBUG ---");
-  // --- FIM DO BLOCO DE DEBUG ---
+// Trocamos o 'import' pelo 'require' para evitar conflitos de compilação na AWS
+const serverlessExpress = require('@vendia/serverless-express');
 
+let server: Handler;
+
+async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT || 3000);
+  
+  await app.init();
+  
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
 }
-bootstrap();
+
+export const handler: Handler = async (
+  event: any,
+  context: Context,
+  callback: Callback,
+) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};
