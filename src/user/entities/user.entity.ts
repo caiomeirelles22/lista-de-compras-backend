@@ -1,25 +1,34 @@
 import { House } from 'src/house/entities/house.entity';
 import { Item } from 'src/item/item.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
-} from 'typeorm';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
+  @ApiProperty({ example: 'uuid-aqui' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty({ example: 'Caio Meirelles' })
+  // 👇 ADICIONE O DEFAULT AQUI
+  @Column({ default: 'Usuário Antigo' }) 
+  name: string;
+
+  @ApiProperty({ example: '22999999999' })
   @Column({ unique: true })
   phone: string;
 
+  // 👇 ADICIONE O DEFAULT AQUI TAMBÉM
+  @Column({ default: '123456' })
+  password: string; 
 
-  @Column()
-  username: string;
+  @ApiPropertyOptional({ example: 'caio_m' })
+  @Column({ nullable: true })
+  username?: string;
+
+  @ApiPropertyOptional({ example: 'caio@email.com' })
+  @Column({ nullable: true })
+  email?: string;
 
   @ManyToMany(() => House, (house) => house.members)
   @JoinTable()

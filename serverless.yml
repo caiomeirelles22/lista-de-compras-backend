@@ -1,5 +1,7 @@
 service: lista-de-compras-backend
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs20.x

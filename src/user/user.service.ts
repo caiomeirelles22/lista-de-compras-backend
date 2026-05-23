@@ -1,9 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { House } from 'src/house/entities/house.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -98,5 +99,13 @@ export class UserService {
   async remove(userId: string): Promise<void> {
     const user = await this.findOne(userId);
     await this.userRepository.remove(user);
+  }
+
+  async login(loginDto: LoginUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { phone: loginDto.phone } });
+    if (!user || user.password !== loginDto.password) {
+      throw new UnauthorizedException('Telefone ou senha inválidos.');
+    }
+    return user;
   }
 }
