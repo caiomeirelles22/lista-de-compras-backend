@@ -76,15 +76,15 @@ export class HouseService {
     return this.houseRepository.find({ relations: ['members'] });
   }
 
-  async findOne(id: string): Promise<House> {
+ async findOne(id: string): Promise<House> {
     const house = await this.houseRepository.findOne({
       where: { id },
-      relations: ['members', 'items'],
+      // 👇 A CORREÇÃO VERDADEIRA ESTÁ NESTA LINHA ABAIXO 👇
+      relations: ['members', 'items', 'items.addedBy', 'items.boughtBy'],
     });
     if (!house) throw new NotFoundException('Casa não encontrada');
     return house;
   }
-
   async update(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
  
     const house = await this.houseRepository.preload({ id, ...updateHouseDto });
